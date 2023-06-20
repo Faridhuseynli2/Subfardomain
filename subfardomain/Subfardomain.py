@@ -61,12 +61,17 @@ for key, language in languages.items():
 welcomeText += "\n"
 print(welcomeText)
 
-selected_language = input("[+] Choose a language: ")
+lang_input_text = "[+] Choose a language ('q' to exit): "
+selected_language = input(lang_input_text)
 
 while str(selected_language) not in languages:
+    if selected_language == 'q':
+        print('\n[i] Exiting...', end="\n\n")
+        exit()
+
     print("[-] You choose the wrong language. Try again");
     print(welcomeText);
-    selected_language = input("[+] Choose a language: ")
+    selected_language = input(lang_input_text)
 
 expressions = expressions[selected_language]
 
