@@ -43,7 +43,7 @@ current_dir = os.path.join(os.path.dirname(__file__))
 wordlist_full_path = os.path.join(current_dir, wordlist_path)
 
 try:
-    subdomains = open(wordlist_full_path).readlines()
+    subdomains = open(wordlist_full_path).read().splitlines()
 except (FileNotFoundError):
     print('\n[-] Wordlist file path is incorrect or does not exist. Exiting...')
     exit();
