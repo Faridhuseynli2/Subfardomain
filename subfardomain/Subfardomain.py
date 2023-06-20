@@ -91,7 +91,7 @@ print()
 try:
     subdomains = open(wordlist_full_path).read().splitlines()
 except (FileNotFoundError):
-    print(expressions["wordlistError"], end="\n\n")
+    print("\033[1;31m" + expressions["wordlistError"], end="\n\n")
     exit();
 
 for sub in subdomains:
@@ -108,7 +108,7 @@ for sub in subdomains:
             headers={"User-Agent": user_agent},
         )
         if response.status_code == 200:
-            print(success)
+            print("\033[1;32m" + success)
 
     except requests.exceptions.RequestException:
         print(" " * len(info), end="\r")
