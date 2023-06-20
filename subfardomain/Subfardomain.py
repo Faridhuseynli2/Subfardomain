@@ -94,11 +94,15 @@ wordlist_full_path = os.path.join(current_dir, wordlist_path)
 
 print()
 try:
-    subdomains = open(wordlist_full_path).read().splitlines()
+    subdomains_file = open(wordlist_full_path, 'r')
+    subdomains = subdomains_file.read().splitlines()
 except (FileNotFoundError):
     print("\033[1;31m" + expressions["wordlistError"], end="\n\n")
     exit();
+finally:
+    subdomains_file.close()
 
+founded_count = 0
 for sub in subdomains:
     domain_test = f"http://{sub}.{target_domain}"
 
@@ -114,8 +118,12 @@ for sub in subdomains:
         )
         if response.status_code == 200:
             print("\033[1;32m" + success)
+            founded_count += 1
 
     except requests.exceptions.RequestException:
         print(" " * len(info), end="\r")
 
-close(subdomains)
+print("");
+info = expressions['info']
+print("\033[1;33m" + info.format(founded_count))
+print("")
