@@ -1,18 +1,28 @@
 import requests
+import json
+
+welcomeText = ""
 
 languages = {
-    "1": "Azerbaijan",
+    "1": "Azerbaijani",
     "2": "English",
-    "3": "Turkce",
+    "3": "Türkçe",
     "4": "Deutsch", 
-    "5": "Español"  
+    "5": "Español"
 }
 
-print("Dil Seçin:")
-for key, value in languages.items():
-    print(f"{key}) {value}")
+for key, language in languages.items():
+    welcomeText += "\n{}. {}".format(key, language)
 
-selected_language = input()
+welcomeText += "\n"
+print(welcomeText)
+
+selected_language = input("[+] Choose a language: ")
+
+while str(selected_language) not in languages:
+    print("[-] You choose the wrong language. Try again");
+    print(welcomeText);
+    selected_language = input("[+] Choose a language: ")
 
 user_agents = {
     "1": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 Edg/103.0.1264.77",
