@@ -12,6 +12,49 @@ languages = {
     "5": "Español"
 }
 
+expressions = {
+    "1": {
+        "selected": "[i] Azərbaycan dilini seçdiniz",
+        "trying": "[i] Subdomen yoxlanılır: {}",
+        "found":  "[+] Subdomen keçərlidir: {}",
+        "info": "[i] {} subdomen adresi aşkar edildi",
+        "target": "[+] Hədəf: ",
+        "wordlistError": "[-] Wordlist'in yolu düzgün deyil və ya fayl mövcud deyil. Script dayandırıldı"
+    },
+    "2": {
+        "selected": "[i] You chose english",
+        "trying": "[i] Checking subdomain: {}",
+        "found":  "[+] Subdomain is valid: {}",
+        "info": "[i] {} subdomains detected",
+        "target": "[+] Target: ",
+        "wordlistError": "[-] Wordlist file path is incorrect or does not exist. Exiting..."
+    },
+    "3": {
+        "selected": "[i] Türkçeyi seçtiniz",
+        "trying": "[i] Alt etki alanı kontrol ediliyor: {}",
+        "found":  "[+] Alt etki alanı geçerli: {}",
+        "info": "[i] {} alt etki alanı tespit edildi",
+        "target": "[+] Hedef: ",
+        "wordlistError": "[-] Wordlist yolu yanlış veya dosya mevcut değil. Çıkılıyor..."
+    },
+    "4": {
+        "selected": "[i] Sie haben sich für Deutsch entschieden",
+        "trying": "[i] Subdomain wird überprüft: {}",
+        "found":  "[+] Die Subdomain ist gültig: {}",
+        "info": "[i] {} Subdomains erkannt",
+        "target": "[+] Ziel: ",
+        "wordlistError": "[-] Der Dateipfad der Wortliste ist falsch oder existiert nicht. Verlassen..."
+    },
+    "5": {
+        "selected": "[i] Elegiste español",
+        "trying": "[i] Comprobando subdominio: {}",
+        "found":  "[+] El subdominio es válido: {}",
+        "info": "[i] {} subdominios detectados",
+        "target": "[+] Apuntar: ",
+        "wordlistError": "[-] La ruta del archivo de la lista de palabras es incorrecta o no existe. Saliendo..."
+    },
+}
+
 for key, language in languages.items():
     welcomeText += "\n{}. {}".format(key, language)
 
@@ -25,6 +68,8 @@ while str(selected_language) not in languages:
     print(welcomeText);
     selected_language = input("[+] Choose a language: ")
 
+expressions = expressions[selected_language]
+
 user_agents = {
     "1": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 Edg/103.0.1264.77",
     "2": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 Edg/103.0.1264.77",
@@ -35,21 +80,27 @@ user_agents = {
 
 user_agent = user_agents.get(selected_language)
 
-print("Enter Domain :")
-target_domain = input()
+print()
+target_domain = input(expressions["target"])
 
 wordlist_path = "wordlists/subdomains.list"
 current_dir = os.path.join(os.path.dirname(__file__))
 wordlist_full_path = os.path.join(current_dir, wordlist_path)
 
+print()
 try:
     subdomains = open(wordlist_full_path).read().splitlines()
 except (FileNotFoundError):
-    print('\n[-] Wordlist file path is incorrect or does not exist. Exiting...')
+    print(expressions["wordlistError"], end="\n\n")
     exit();
 
 for sub in subdomains:
     domain_test = f"http://{sub}.{target_domain}"
+
+    info = expressions["trying"].format(domain_test)
+    success = expressions["found"].format(domain_test)
+
+    print(info, end='\r')
 
     try:
         response = requests.get(
@@ -57,17 +108,9 @@ for sub in subdomains:
             headers={"User-Agent": user_agent},
         )
         if response.status_code == 200:
-            if selected_language == "1":
-                print("Domain Tapildi:", domain_test)  # Azerbaijan
-            elif selected_language == "2":
-                print("Valid Domain:", domain_test)  # English
-            elif selected_language == "3":
-                print("Geçerli Alan Adı:", domain_test)  # Türkçe
-            elif selected_language == "4":
-                print("Gültige Domain:", domain_test)  # Almanca
-            elif selected_language == "5":
-                print("Dominio válido:", domain_test)  # İspanyolca
-            else:
-                print("Geçerli Alan Adı:", domain_test)  
+            print(success)
+
     except requests.exceptions.RequestException:
-        pass
+        print(" " * len(info), end="\r")
+
+close(subdomains)
