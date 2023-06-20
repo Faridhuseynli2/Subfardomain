@@ -1,5 +1,6 @@
 import requests
 import json
+import os
 
 welcomeText = ""
 
@@ -37,10 +38,17 @@ user_agent = user_agents.get(selected_language)
 print("Enter Domain :")
 target_domain = input()
 
-subdomain_list = open("mySubDomain.txt").read()
-subdoms = subdomain_list.splitlines()
+wordlist_path = "wordlists/subdomains.list"
+current_dir = os.path.join(os.path.dirname(__file__))
+wordlist_full_path = os.path.join(current_dir, wordlist_path)
 
-for sub in subdoms:
+try:
+    subdomains = open(wordlist_full_path).readlines()
+except (FileNotFoundError):
+    print('\n[-] Wordlist file path is incorrect or does not exist. Exiting...')
+    exit();
+
+for sub in subdomains:
     domain_test = f"http://{sub}.{target_domain}"
 
     try:
